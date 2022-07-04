@@ -7,6 +7,7 @@ all: grafana_hookshot.js grafana_hookshot.txt
 
 %_hookshot.txt: %_hookshot.js
 	jq -R -s '.' < $< > $@
+	cat $@
 
 clean:
 	rm -f *_hookshot.js

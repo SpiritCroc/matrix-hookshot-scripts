@@ -62,6 +62,9 @@ if (Array.isArray(data.alerts)) {
         html += "</ul></p>";
     });
 }
+html += "\n<p><details><summary>Raw data</summary><pre><code class=\"language-json\">" +
+    JSON.stringify(data, null, 2) +
+    "</code></pre></details>";
 result = {
   "version": "v2",
   "empty": false,
