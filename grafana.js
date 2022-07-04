@@ -153,11 +153,42 @@ resolved_data = {
   "state": "ok",
   "message": "**Resolved**\n\nValue: [ metric='test-grafana-fail-service.service' labels={name=test-grafana-fail-service.service, state=failed} value=1 ]\nLabels:\n - alertname = systemd failures\nAnnotations:\n - description = systemctl list-units --failed ;\nsystemctl reset-failed\nSource: https://example.com/grafana/alerting/6-WtnS8nk/edit\nSilence: https://example.com/grafana/alerting/silence/new?alertmanager=grafana&matcher=alertname%3Dsystemd+failures\nDashboard: https://example.com/grafana/d/hyFvC6y7z\nPanel: https://example.com/grafana/d/hyFvC6y7z?viewPanel=2\n"
 };
-//data = multi_fail_data;
-//data = test_data;
-///data = resolved_data;
+fs_fail_data = {
+  "receiver": "hookshot-only",
+  "status": "firing",
+  "alerts": [
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "FS used"
+      },
+      "annotations": {},
+      "startsAt": "2022-07-03T18:34:02.868808278+02:00",
+      "endsAt": "0001-01-01T00:00:00Z",
+      "generatorURL": "https://example.com/alerting/grafana/le6Ay187k/view",
+      "fingerprint": "d3efc7f8672067f6",
+      "silenceURL": "https://example.com/alerting/silence/new?alertmanager=grafana&matcher=alertname%3DFS+used",
+      "dashboardURL": "https://example.com/d/hyFvC6y7z",
+      "panelURL": "https://example.com/d/hyFvC6y7z?viewPanel=4",
+      "valueString": "[ var='B0' metric='localhost:9100/' labels={device=/dev/mapper/root, fstype=ext4, instance=localhost:9100, job=node, mountpoint=/} value=86.83759366878994 ]"
+    }
+  ],
+  "groupLabels": {},
+  "commonLabels": {
+    "alertname": "FS used"
+  },
+  "commonAnnotations": {},
+  "externalURL": "https://example.com/",
+  "version": "1",
+  "groupKey": "{}/{somelabel!=\"no-hookshot\"}:{}",
+  "truncatedAlerts": 0,
+  "orgId": 1,
+  "title": "[FIRING:1]  (FS used)",
+  "state": "alerting",
+  "message": "**Firing**\n\nValue: [ var='B0' metric='localhost:9100/' labels={device=/dev/mapper/root, fstype=ext4, instance=localhost:9100, job=node, mountpoint=/} value=86.83759366878994 ]\nLabels:\n - alertname = FS used\nAnnotations:\nSource: https://example.com/alerting/grafana/le6Ay187k/view\nSilence: https://example.com/alerting/silence/new?alertmanager=grafana&matcher=alertname%3DFS+used\nDashboard: https://example.com/d/hyFvC6y7z\nPanel: https://example.com/d/hyFvC6y7z?viewPanel=4\n"
+}
 require('fs').writeFile("test.html", "", (err) => { if (err) throw err; });
-[test_data, fail_data, multi_fail_data, resolved_data].forEach(data => {
+[test_data, fail_data, multi_fail_data, resolved_data, fs_fail_data].forEach(data => {
 
 // HEADER END
 
@@ -186,15 +217,15 @@ function colorTitle(title, state, html_pre = "", html_post = "") {
 // https://github.com/grafana/grafana/discussions/45457
 function parseValueString(valueString) {
     let resultValues = [];
-    for (let match of valueString.matchAll(/\[\s*(var|metric)='([^']+)'\s+labels={([^}]*)}\s+value=([^\s]+)\s*\]/g)) {
+    for (let match of valueString.matchAll(/\[(\s*var='.*?')??\s*(var|metric)='([^']+)'\s+labels={([^}]*)}\s+value=([^\s]+)\s*\]/g)) {
         let value = {
-            type: match[1],
-            metric: match[2],
+            type: match[2],
+            metric: match[3],
             labels: {},
-            value: parseFloat(match[4])
+            value: parseFloat(match[5])
         };
-        if (match[3].length > 0) {
-            for (let labelPair of match[3].split(",")) {
+        if (match[4].length > 0) {
+            for (let labelPair of match[4].split(",")) {
                 let labelParts = labelPair.split("=");
                 if (labelParts.length === 2) {
                     value.labels[labelParts[0].trim()] = labelParts[1].trim();

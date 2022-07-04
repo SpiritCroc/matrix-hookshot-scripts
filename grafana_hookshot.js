@@ -20,15 +20,15 @@ function colorTitle(title, state, html_pre = "", html_post = "") {
 }
 function parseValueString(valueString) {
     let resultValues = [];
-    for (let match of valueString.matchAll(/\[\s*(var|metric)='([^']+)'\s+labels={([^}]*)}\s+value=([^\s]+)\s*\]/g)) {
+    for (let match of valueString.matchAll(/\[(\s*var='.*?')??\s*(var|metric)='([^']+)'\s+labels={([^}]*)}\s+value=([^\s]+)\s*\]/g)) {
         let value = {
-            type: match[1],
-            metric: match[2],
+            type: match[2],
+            metric: match[3],
             labels: {},
-            value: parseFloat(match[4])
+            value: parseFloat(match[5])
         };
-        if (match[3].length > 0) {
-            for (let labelPair of match[3].split(",")) {
+        if (match[4].length > 0) {
+            for (let labelPair of match[4].split(",")) {
                 let labelParts = labelPair.split("=");
                 if (labelParts.length === 2) {
                     value.labels[labelParts[0].trim()] = labelParts[1].trim();
