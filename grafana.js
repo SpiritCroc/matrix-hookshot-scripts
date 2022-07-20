@@ -187,8 +187,65 @@ fs_fail_data = {
   "state": "alerting",
   "message": "**Firing**\n\nValue: [ var='B0' metric='localhost:9100/' labels={device=/dev/mapper/root, fstype=ext4, instance=localhost:9100, job=node, mountpoint=/} value=86.83759366878994 ]\nLabels:\n - alertname = FS used\nAnnotations:\nSource: https://example.com/alerting/grafana/le6Ay187k/view\nSilence: https://example.com/alerting/silence/new?alertmanager=grafana&matcher=alertname%3DFS+used\nDashboard: https://example.com/d/hyFvC6y7z\nPanel: https://example.com/d/hyFvC6y7z?viewPanel=4\n"
 }
+no_data = {
+  "receiver": "hookshot-only",
+  "status": "firing",
+  "alerts": [
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "DatasourceNoData",
+        "datasource_uid": "Cbx8lpynz",
+        "ref_id": "A",
+        "rulename": "battery charge"
+      },
+      "annotations": {},
+      "startsAt": "2022-07-19T06:07:07+02:00",
+      "endsAt": "0001-01-01T00:00:00Z",
+      "generatorURL": "https://example.com/alerting/grafana/3HwbuaU7z/view",
+      "fingerprint": "583e2e8d8fdc7002",
+      "silenceURL": "https://example.com/alerting/silence/new?alertmanager=grafana&matcher=alertname%3DDatasourceNoData&matcher=datasource_uid%3DCbx8lpynz&matcher=ref_id%3DA&matcher=rulename%3Dbattery+charge",
+      "dashboardURL": "https://example.com/d/_jnfQ-8nk",
+      "panelURL": "https://example.com/d/_jnfQ-8nk?viewPanel=2",
+      "valueString": ""
+    },
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "DatasourceNoData",
+        "datasource_uid": "Cbx8lpynz",
+        "ref_id": "A",
+        "rulename": "UPS status"
+      },
+      "annotations": {},
+      "startsAt": "2022-07-19T14:37:07+02:00",
+      "endsAt": "0001-01-01T00:00:00Z",
+      "generatorURL": "https://example.com/alerting/grafana/IA_dr-8nz/view",
+      "fingerprint": "9467ea41a4343aad",
+      "silenceURL": "https://example.com/alerting/silence/new?alertmanager=grafana&matcher=alertname%3DDatasourceNoData&matcher=datasource_uid%3DCbx8lpynz&matcher=ref_id%3DA&matcher=rulename%3DUPS+status",
+      "dashboardURL": "https://example.com/d/_jnfQ-8nk",
+      "panelURL": "https://example.com/d/_jnfQ-8nk?viewPanel=12",
+      "valueString": ""
+    }
+  ],
+  "groupLabels": {},
+  "commonLabels": {
+    "alertname": "DatasourceNoData",
+    "datasource_uid": "Cbx8lpynz",
+    "ref_id": "A"
+  },
+  "commonAnnotations": {},
+  "externalURL": "https://example.com/",
+  "version": "1",
+  "groupKey": "{}/{somelabel!=\"no-hookshot\"}:{}",
+  "truncatedAlerts": 0,
+  "orgId": 1,
+  "title": "[FIRING:2]  (DatasourceNoData Cbx8lpynz A)",
+  "state": "alerting",
+  "message": "**Firing**\n\nValue: [no value]\nLabels:\n - alertname = DatasourceNoData\n - datasource_uid = Cbx8lpynz\n - ref_id = A\n - rulename = battery charge\nAnnotations:\nSource: https://example.com/alerting/grafana/3HwbuaU7z/view\nSilence: https://example.com/alerting/silence/new?alertmanager=grafana&matcher=alertname%3DDatasourceNoData&matcher=datasource_uid%3DCbx8lpynz&matcher=ref_id%3DA&matcher=rulename%3Dbattery+charge\nDashboard: https://example.com/d/_jnfQ-8nk\nPanel: https://example.com/d/_jnfQ-8nk?viewPanel=2\n\nValue: [no value]\nLabels:\n - alertname = DatasourceNoData\n - datasource_uid = Cbx8lpynz\n - ref_id = A\n - rulename = UPS status\nAnnotations:\nSource: https://example.com/alerting/grafana/IA_dr-8nz/view\nSilence: https://example.com/alerting/silence/new?alertmanager=grafana&matcher=alertname%3DDatasourceNoData&matcher=datasource_uid%3DCbx8lpynz&matcher=ref_id%3DA&matcher=rulename%3DUPS+status\nDashboard: https://example.com/d/_jnfQ-8nk\nPanel: https://example.com/d/_jnfQ-8nk?viewPanel=12\n"
+}
 require('fs').writeFile("test.html", "", (err) => { if (err) throw err; });
-[test_data, fail_data, multi_fail_data, resolved_data, fs_fail_data].forEach(data => {
+[test_data, fail_data, multi_fail_data, resolved_data, fs_fail_data, no_data].forEach(data => {
 
 // HEADER END
 
@@ -259,7 +316,11 @@ html += "\n";
 
 if (Array.isArray(data.alerts)) {
     data.alerts.forEach(al => {
-        colorTitle(al.labels.alertname, al.status, "<h4>", "</h4>");
+        title = al.labels.alertname;
+        if (al.labels.rulename !== undefined) {
+            title += " (" + al.labels.rulename + ")";
+        }
+        colorTitle(title, al.status, "<h4>", "</h4>");
         if (al.annotations !== undefined && al.annotations.description !== undefined) {
             html += "\n<p>" + al.annotations.description + "</p>";
             plain += "\n" + al.annotations.description;
@@ -272,7 +333,11 @@ if (Array.isArray(data.alerts)) {
                 html += "<li>" + val.metric + ": " + val.value;
             })
         }
-        html += "</ul></p>";
+        html += "</ul>";
+        if (al.silenceURL !== undefined) {
+            html += "<a href=\"" + al.silenceURL + "\">Mute " + title +"</a>";
+        }
+        html += "</p>";
         //console.log(values);
     });
 }

@@ -46,7 +46,11 @@ plain += "\n";
 html += "\n";
 if (Array.isArray(data.alerts)) {
     data.alerts.forEach(al => {
-        colorTitle(al.labels.alertname, al.status, "<h4>", "</h4>");
+        title = al.labels.alertname;
+        if (al.labels.rulename !== undefined) {
+            title += " (" + al.labels.rulename + ")";
+        }
+        colorTitle(title, al.status, "<h4>", "</h4>");
         if (al.annotations !== undefined && al.annotations.description !== undefined) {
             html += "\n<p>" + al.annotations.description + "</p>";
             plain += "\n" + al.annotations.description;
@@ -59,7 +63,11 @@ if (Array.isArray(data.alerts)) {
                 html += "<li>" + val.metric + ": " + val.value;
             })
         }
-        html += "</ul></p>";
+        html += "</ul>";
+        if (al.silenceURL !== undefined) {
+            html += "<a href=\"" + al.silenceURL + "\">Mute " + title +"</a>";
+        }
+        html += "</p>";
     });
 }
 html += "\n<p><details><summary>Raw data</summary><pre><code class=\"language-json\">" +
