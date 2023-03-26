@@ -7,7 +7,7 @@ test_1 = {
     "Version": "1.5.26.sc64 [40101040] (F-5bbd462c-2023-03-12 14:20:47 +0100)",
     "app_language": "en_US",
     "branch_name": "sc",
-    "can_contact": "false",
+    "can_contact": "true",
     "default_app_language": "en_US",
     "device": "sdk_gphone64_x86_64",
     "device_density": "2.625",
@@ -194,12 +194,17 @@ function escapeHTML(unsafe) {
   )
 }
 
-html_user = escapeHTML(data.data.user_id) + ": ";
+plain_user = data.data.user_id;
 if (data.data.can_contact != "true") {
-    html_user = '<font color="#808080">' + html_user + "</font>";
+    // Make unclickable and gray
+    plain_user = plain_user.replace(":", "/");
+    html_user = escapeHTML(plain_user) + ": ";
+    html_user = '<font color="#808080">' + html_user.replace("&#58;", "/") + "</font>";
+} else {
+    html_user = escapeHTML(plain_user) + ": ";
 }
 // If contains for newlines, omit that (could be huge stack trace)
-plain = data.data.user_id + ": " + data.user_text.replace(/\n\n\n\n.*/s, ' [...]');
+plain = plain_user + ": " + data.user_text.replace(/\n\n\n\n.*/s, ' [...]');
 html = html_user + data.user_text.replace(/\n\n\n\n(.*)/s, '');
 if (data.user_text.includes("\n\n\n\n")) {
     html += "<br/>" + data.user_text.replace(/.*\n\n\n\n(.*)/s, ' <details><summary>[...]</summary><pre><code>$1</code></pre></details>');

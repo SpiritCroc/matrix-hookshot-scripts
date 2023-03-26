@@ -4,11 +4,15 @@ function escapeHTML(unsafe) {
     c => '&#' + ('000' + c.charCodeAt(0)).slice(-4) + ';'
   )
 }
-html_user = escapeHTML(data.data.user_id) + ": ";
+plain_user = data.data.user_id;
 if (data.data.can_contact != "true") {
-    html_user = '<font color="#808080">' + html_user + "</font>";
+    plain_user = plain_user.replace(":", "/");
+    html_user = escapeHTML(plain_user) + ": ";
+    html_user = '<font color="#808080">' + html_user.replace("&#58;", "/") + "</font>";
+} else {
+    html_user = escapeHTML(plain_user) + ": ";
 }
-plain = data.data.user_id + ": " + data.user_text.replace(/\n\n\n\n.*/s, ' [...]');
+plain = plain_user + ": " + data.user_text.replace(/\n\n\n\n.*/s, ' [...]');
 html = html_user + data.user_text.replace(/\n\n\n\n(.*)/s, '');
 if (data.user_text.includes("\n\n\n\n")) {
     html += "<br/>" + data.user_text.replace(/.*\n\n\n\n(.*)/s, ' <details><summary>[...]</summary><pre><code>$1</code></pre></details>');
