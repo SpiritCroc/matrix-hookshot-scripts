@@ -243,9 +243,48 @@ no_data = {
   "title": "[FIRING:2]  (DatasourceNoData Cbx8lpynz A)",
   "state": "alerting",
   "message": "**Firing**\n\nValue: [no value]\nLabels:\n - alertname = DatasourceNoData\n - datasource_uid = Cbx8lpynz\n - ref_id = A\n - rulename = battery charge\nAnnotations:\nSource: https://example.com/alerting/grafana/3HwbuaU7z/view\nSilence: https://example.com/alerting/silence/new?alertmanager=grafana&matcher=alertname%3DDatasourceNoData&matcher=datasource_uid%3DCbx8lpynz&matcher=ref_id%3DA&matcher=rulename%3Dbattery+charge\nDashboard: https://example.com/d/_jnfQ-8nk\nPanel: https://example.com/d/_jnfQ-8nk?viewPanel=2\n\nValue: [no value]\nLabels:\n - alertname = DatasourceNoData\n - datasource_uid = Cbx8lpynz\n - ref_id = A\n - rulename = UPS status\nAnnotations:\nSource: https://example.com/alerting/grafana/IA_dr-8nz/view\nSilence: https://example.com/alerting/silence/new?alertmanager=grafana&matcher=alertname%3DDatasourceNoData&matcher=datasource_uid%3DCbx8lpynz&matcher=ref_id%3DA&matcher=rulename%3DUPS+status\nDashboard: https://example.com/d/_jnfQ-8nk\nPanel: https://example.com/d/_jnfQ-8nk?viewPanel=12\n"
-}
+};
+fail_data_2 = {
+  "receiver": "hookshot-only",
+  "status": "firing",
+  "alerts": [
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "Sites-external",
+        "grafana_folder": "Alert-Folder"
+      },
+      "annotations": {},
+      "startsAt": "2023-06-23T10:31:00+02:00",
+      "endsAt": "0001-01-01T00:00:00Z",
+      "generatorURL": "https://example.com/alerting/grafana/IJo53aU7z/view?orgId=1",
+      "fingerprint": "6a66c3d52887b0b9",
+      "silenceURL": "https://example.com/alerting/silence/new?alertmanager=grafana&matcher=alertname%3DSites-external&matcher=grafana_folder%3DAlert-Folder",
+      "dashboardURL": "https://example.com/d/qnTFqaUnk?orgId=1",
+      "panelURL": "https://example.com/d/qnTFqaUnk?orgId=1&viewPanel=2",
+      "values": {
+        "B0": 0
+      },
+      "valueString": "[ var='B0' metric='probe_success' labels={__name__=probe_success, instance=https://weblate.spiritcroc.de, job=blackbox} value=0 ]"
+    }
+  ],
+  "groupLabels": {},
+  "commonLabels": {
+    "alertname": "Sites-external",
+    "grafana_folder": "Alert-Folder"
+  },
+  "commonAnnotations": {},
+  "externalURL": "https://example.com/",
+  "version": "1",
+  "groupKey": "{}/{somelabel!=\"no-hookshot\"}:{}",
+  "truncatedAlerts": 0,
+  "orgId": 1,
+  "title": "[FIRING:1]  (Sites-external Alert-Folder)",
+  "state": "alerting",
+  "message": "**Firing**\n\nValue: B0=0\nLabels:\n - alertname = Sites-external\n - grafana_folder = Alert-Folder\nAnnotations:\nSource: https://example.com/alerting/grafana/IJo53aU7z/view?orgId=1\nSilence: https://example.com/alerting/silence/new?alertmanager=grafana&matcher=alertname%3DSites-external&matcher=grafana_folder%3DAlert-Folder\nDashboard: https://example.com/d/qnTFqaUnk?orgId=1\nPanel: https://example.com/d/qnTFqaUnk?orgId=1&viewPanel=2\n"
+};
 require('fs').writeFile("test.html", "", (err) => { if (err) throw err; });
-[test_data, fail_data, multi_fail_data, resolved_data, fs_fail_data, no_data].forEach(data => {
+[test_data, fail_data, fail_data_2, multi_fail_data, resolved_data, fs_fail_data, no_data].forEach(data => {
 
 // HEADER END
 
@@ -331,6 +370,20 @@ if (Array.isArray(data.alerts)) {
             values.forEach(val => {
                 plain += "\n- " + val.metric + ": " + val.value;
                 html += "<li>" + val.metric + ": " + val.value;
+                if (val.labels !== undefined) {
+                    plain += " (";
+                    html += " (";
+                    for (const [l, v] of Object.entries(val.labels)) {
+                        if (l == "__name__" || val.metric.includes(v)) {
+                            continue;
+                        }
+                        plain += " " + l + "=" + v;
+                        html += " " + l + "=" + v;
+                    }
+                    plain += " )";
+                    html += " )";
+                }
+                html += "</li>";
             })
         }
         html += "</ul>";

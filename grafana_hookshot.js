@@ -61,6 +61,20 @@ if (Array.isArray(data.alerts)) {
             values.forEach(val => {
                 plain += "\n- " + val.metric + ": " + val.value;
                 html += "<li>" + val.metric + ": " + val.value;
+                if (val.labels !== undefined) {
+                    plain += " (";
+                    html += " (";
+                    for (const [l, v] of Object.entries(val.labels)) {
+                        if (l == "__name__" || val.metric.includes(v)) {
+                            continue;
+                        }
+                        plain += " " + l + "=" + v;
+                        html += " " + l + "=" + v;
+                    }
+                    plain += " )";
+                    html += " )";
+                }
+                html += "</li>";
             })
         }
         html += "</ul>";
