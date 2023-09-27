@@ -181,13 +181,44 @@ test_3 = {
   "listing_url": "https://s2.spiritcroc.de/api/listing/2023-03-23/140855-RFSUIA2D"
 };
 
+test_x1 = {
+  "id": "2023-09-27/093003-YPDKCZZC",
+  "user_text": "aaaaaaaaaaaa",
+  "app": "schildichat-android-next",
+  "data": {
+    "User-Agent": "SchildiNext dbg/0.2.2.sc1 (OnePlus ONEPLUS A5000; Android 13; TQ3A.230705.001; Sdk TODO)",
+    "can_contact": "false",
+    "device": "ONEPLUS A5000",
+    "device_id": "ZXHJFDGLOG",
+    "locale": "en_DE",
+    "multi_window": "OFF",
+    "olm_version": "undefined",
+    "server_version": "",
+    "user_id": "@spiritcroc:matrix.org"
+  },
+  "labels": [
+    "0.2.2.sc1"
+  ],
+  "logs": [
+    "logcat.log.gz"
+  ],
+  "logErrors": null,
+  "files": null,
+  "fileErrors": null,
+  "report_url": "https://github.com/SchildiChat/schildinext-rageshakes/issues/2",
+  "listing_url": "https://rageshake.spiritcroc.de/api/listing/2023-09-27/093003-YPDKCZZC"
+};
+
 require('fs').writeFile("test.html", "", (err) => { if (err) throw err; });
-[test_1, test_2, test_3].forEach(data => {
+[test_1, test_2, test_3, test_x1].forEach(data => {
 
 // HEADER END
 
 // https://stackoverflow.com/a/66481918
 function escapeHTML(unsafe) {
+  if (unsafe === undefined) {
+      return "";
+  }
   return unsafe.replace(
     /[\u0000-\u002F\u003A-\u0040\u005B-\u0060\u007B-\u00FF]/g,
     c => '&#' + ('000' + c.charCodeAt(0)).slice(-4) + ';'
@@ -244,6 +275,7 @@ labels = data.labels.filter(label =>
 ).join(", ");
 appendValue(undefined, labels);
 
+appendValue("app", data.app);
 appendValue("os");
 //appendValue("can_contact");
 

@@ -1,4 +1,7 @@
 function escapeHTML(unsafe) {
+  if (unsafe === undefined) {
+      return "";
+  }
   return unsafe.replace(
     /[\u0000-\u002F\u003A-\u0040\u005B-\u0060\u007B-\u00FF]/g,
     c => '&#' + ('000' + c.charCodeAt(0)).slice(-4) + ';'
@@ -44,6 +47,7 @@ labels = data.labels.filter(label =>
     !label.startsWith("hs:")
 ).join(", ");
 appendValue(undefined, labels);
+appendValue("app", data.app);
 appendValue("os");
 issue_name = data.report_url.replace(new RegExp(".*issues/"), '#');
 if (issue_name == data.report_url) {
