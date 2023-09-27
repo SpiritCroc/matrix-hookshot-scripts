@@ -216,7 +216,7 @@ require('fs').writeFile("test.html", "", (err) => { if (err) throw err; });
 
 // https://stackoverflow.com/a/66481918
 function escapeHTML(unsafe) {
-  if (unsafe === undefined) {
+  if (!unsafe) {
       return "";
   }
   return unsafe.replace(
@@ -246,9 +246,12 @@ if (data.data.is_debug_build == "true") {
 }
 */
 
-function appendValue(key, value = undefined, html_value = undefined) {
+function appendValue(key, value = undefined, html_value = undefined, omitIfEmpty = false) {
     if (value === undefined) {
         value = Reflect.get(data.data, key);
+    }
+    if (omitIfEmpty && !value) {
+        return;
     }
     if (html_value === undefined) {
         html_value = "<code>" + escapeHTML(value) + "</code>";
@@ -272,11 +275,10 @@ plain += "\n\n";
 labels = data.labels.filter(label =>
     !label.startsWith("mxid:") &&
     !label.startsWith("hs:")
-).join(", ");
+).join(", ") + " | " + data.app;
 appendValue(undefined, labels);
 
-appendValue("app", data.app);
-appendValue("os");
+appendValue("os", undefined, undefined, true);
 //appendValue("can_contact");
 
 issue_name = data.report_url.replace(new RegExp(".*issues/"), '#');

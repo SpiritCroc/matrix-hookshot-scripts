@@ -1,5 +1,5 @@
 function escapeHTML(unsafe) {
-  if (unsafe === undefined) {
+  if (!unsafe) {
       return "";
   }
   return unsafe.replace(
@@ -25,9 +25,12 @@ if (data.data.is_debug_build == "true") {
     html = '<font color="#00ffff">' + html + "</font>";
 }
 */
-function appendValue(key, value = undefined, html_value = undefined) {
+function appendValue(key, value = undefined, html_value = undefined, omitIfEmpty = false) {
     if (value === undefined) {
         value = Reflect.get(data.data, key);
+    }
+    if (omitIfEmpty && !value) {
+        return;
     }
     if (html_value === undefined) {
         html_value = "<code>" + escapeHTML(value) + "</code>";
@@ -45,10 +48,9 @@ plain += "\n\n";
 labels = data.labels.filter(label =>
     !label.startsWith("mxid:") &&
     !label.startsWith("hs:")
-).join(", ");
+).join(", ") + " | " + data.app;
 appendValue(undefined, labels);
-appendValue("app", data.app);
-appendValue("os");
+appendValue("os", undefined, undefined, true);
 issue_name = data.report_url.replace(new RegExp(".*issues/"), '#');
 if (issue_name == data.report_url) {
     issue_name = "Report";
