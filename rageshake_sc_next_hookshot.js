@@ -1,3 +1,6 @@
+if (data.app != "schildichat-android-next") {
+    return;
+}
 function escapeHTML(unsafe) {
   if (!unsafe) {
       return "";
@@ -48,14 +51,14 @@ plain += "\n\n";
 labels = data.labels.filter(label =>
     !label.startsWith("mxid:") &&
     !label.startsWith("hs:")
-).join(", ") + " | " + data.app;
+).join(", ");
 appendValue(undefined, labels);
 appendValue("os", undefined, undefined, true);
 issue_name = data.report_url.replace(new RegExp(".*issues/"), '#');
 if (issue_name == data.report_url) {
     issue_name = "Report";
 }
-html += '<a href="' + escapeHTML(data.report_url) + '">' + escapeHTML(issue_name) + "</a><br/>";
+html += '<a href="' + escapeHTML(data.report_url) + '">' + escapeHTML(issue_name) + "</a> (" + data.app + ")<br/>";
 if (data.logs) {
     log_count = data.logs.length;
 } else {
