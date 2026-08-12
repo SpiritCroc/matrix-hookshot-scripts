@@ -215,7 +215,7 @@ require('fs').writeFile("test.html", "", (err) => { if (err) throw err; });
 // HEADER END
 
 // Allow filtering by app ID for splitting webhooks across rooms
-if (data.app != "MAKE_WILL_REPLACE_THIS_STRING_DONT_TOUCH") {
+if (data.app != "schildi-revenge") {
     result = {
       "version": "v2",
       "empty": true,

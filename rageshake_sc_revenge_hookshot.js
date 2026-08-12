@@ -1,4 +1,4 @@
-if (data.app != "schildichat-android-next") {
+if (data.app != "schildi-revenge") {
     result = {
       "version": "v2",
       "empty": true,

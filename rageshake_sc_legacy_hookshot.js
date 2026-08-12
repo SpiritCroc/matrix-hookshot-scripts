@@ -1,4 +1,11 @@
 if (data.app != "schildichat-android") {
+    result = {
+      "version": "v2",
+      "empty": true,
+      "plain": "",
+      "html": "",
+      "msgtype": "m.notice",
+    }
     return;
 }
 function escapeHTML(unsafe) {
