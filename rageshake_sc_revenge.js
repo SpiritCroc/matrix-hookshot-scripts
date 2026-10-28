@@ -1,7 +1,7 @@
 test_1 = {
   "id": "2023-03-23/114756-SI2J4XWZ",
   "user_text": "Sample",
-  "app": "schildichat-android",
+  "app": "schildi-revenge",
   "data": {
     "User-Agent": "SchildiChat dbg/1.5.26.sc64 (Google sdk_gphone64_x86_64; Android 13; sdk_gphone64_x86_64-userdebug 13 TPB4.220624.004 8808248 dev-keys; Flavour FDroid; MatrixAndroidSdk2 1.5.28)",
     "Version": "1.5.26.sc64 [40101040] (F-5bbd462c-2023-03-12 14:20:47 +0100)",
@@ -184,7 +184,7 @@ test_3 = {
 test_x1 = {
   "id": "2023-09-27/093003-YPDKCZZC",
   "user_text": "aaaaaaaaaaaa",
-  "app": "schildichat-android-next",
+  "app": "schildi-revenge",
   "data": {
     "User-Agent": "SchildiNext dbg/0.2.2.sc1 (OnePlus ONEPLUS A5000; Android 13; TQ3A.230705.001; Sdk TODO)",
     "can_contact": "false",
@@ -196,9 +196,6 @@ test_x1 = {
     "server_version": "",
     "user_id": "@spiritcroc:matrix.org"
   },
-  "labels": [
-    "0.2.2.sc1"
-  ],
   "logs": [
     "logcat.log.gz"
   ],
@@ -288,7 +285,7 @@ labels = (data.labels ?? []).filter(label =>
     !label.startsWith("mxid:") &&
     !label.startsWith("hs:")
 ).join(", ");
-appendValue(undefined, labels);
+appendValue(undefined, labels, undefined, true);
 
 appendValue("os", undefined, undefined, true);
 //appendValue("can_contact");

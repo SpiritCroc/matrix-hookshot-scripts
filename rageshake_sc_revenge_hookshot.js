@@ -59,7 +59,7 @@ labels = (data.labels ?? []).filter(label =>
     !label.startsWith("mxid:") &&
     !label.startsWith("hs:")
 ).join(", ");
-appendValue(undefined, labels);
+appendValue(undefined, labels, undefined, true);
 appendValue("os", undefined, undefined, true);
 issue_name = data.report_url.replace(new RegExp(".*issues/"), '#');
 if (issue_name == data.report_url) {
