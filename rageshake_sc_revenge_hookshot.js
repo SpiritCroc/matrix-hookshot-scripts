@@ -55,7 +55,7 @@ function appendValue(key, value = undefined, html_value = undefined, omitIfEmpty
 }
 html += "<hr/>";
 plain += "\n\n";
-labels = data.labels.filter(label =>
+labels = (data.labels ?? []).filter(label =>
     !label.startsWith("mxid:") &&
     !label.startsWith("hs:")
 ).join(", ");

@@ -284,7 +284,7 @@ plain += "\n\n";
 
 //appendValue("Version");
 
-labels = data.labels.filter(label =>
+labels = (data.labels ?? []).filter(label =>
     !label.startsWith("mxid:") &&
     !label.startsWith("hs:")
 ).join(", ");
